@@ -1,0 +1,23 @@
+{
+    "name": "Authenta Receipt Verification",
+    "version": "17.0.1.2.0",
+    "category": "Human Resources/Expenses",
+    "summary": "Verify expense receipts with the Authenta service and block approval of fake receipts",
+    "author": "Authenta",
+    "maintainer": "Authenta",
+    "website": "https://authenta.ai",
+    "license": "LGPL-3",
+    "depends": ["hr_expense"],
+    "external_dependencies": {"python": ["requests"]},
+    "data": [
+        "security/authenta_expense_security.xml",
+        "security/ir.model.access.csv",
+        "data/ir_cron.xml",
+        "views/authenta_verification_views.xml",
+        "views/hr_expense_views.xml",
+        "views/res_config_settings_views.xml",
+    ],
+    "installable": True,
+    "application": False,
+    "uninstall_hook": "uninstall_hook",
+}

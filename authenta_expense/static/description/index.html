@@ -1,0 +1,67 @@
+<section class="oe_container">
+    <div class="oe_row oe_spaced">
+        <h2 class="oe_slogan">Authenta Receipt Verification</h2>
+        <h3 class="oe_slogan">Catch fake and edited expense receipts before they are approved</h3>
+        <p class="oe_mt32">
+            Every receipt attached to an expense is checked by the Authenta service in the background. Expense reports
+            with a receipt Authenta flags as fake, or that could not be verified, cannot be approved until they are
+            resolved. Employees keep using Odoo Expenses exactly as before.
+        </p>
+    </div>
+</section>
+
+<section class="oe_container oe_dark">
+    <div class="oe_row oe_spaced">
+        <h2 class="oe_slogan">How it works</h2>
+        <ol>
+            <li>An employee creates an expense and attaches the receipt (JPEG, PNG or PDF) as usual.</li>
+            <li>Odoo sends the receipt to Authenta in the background; nothing changes for the employee.</li>
+            <li>The expense shows the result: <b>Verified</b>, <b>Fake Receipt</b> or <b>Not Verified</b>.</li>
+            <li>Managers cannot approve a report while one of its receipts is fake, still being verified or could not
+                be verified. Refusing a report is always possible.</li>
+        </ol>
+    </div>
+</section>
+
+<section class="oe_container">
+    <div class="oe_row oe_spaced">
+        <h2 class="oe_slogan">Setup in one click</h2>
+        <ol>
+            <li>Install the module (it depends only on <i>Expenses</i>).</li>
+            <li>Go to <b>Expenses &rarr; Configuration &rarr; Settings &rarr; Authenta Receipt Verification</b>
+                (administrators only) and click <b>Connect</b>.</li>
+            <li>Log in to Authenta as an owner or admin of your organization and click <b>Authorize</b>.
+                You are sent back to Odoo, which shows <i>Connected</i>. No API key is copied.</li>
+            <li>Tick <b>Verify receipts with Authenta</b> and save.</li>
+        </ol>
+        <p>
+            If Connect cannot be used, an integration API key created in Authenta can be entered manually under the
+            Connect button (<b>Save &amp; Test</b>). <b>Disconnect</b> revokes the credential.
+        </p>
+    </div>
+</section>
+
+<section class="oe_container oe_dark">
+    <div class="oe_row oe_spaced">
+        <h2 class="oe_slogan">Requirements and data</h2>
+        <ul>
+            <li>An active <a href="https://authenta.ai" target="_blank">Authenta</a> account. Verification usage is
+                billed by Authenta to your Authenta organization; the module itself is free.</li>
+            <li>Odoo must be reachable by administrators over https (http is accepted on localhost only), because
+                Authenta sends the browser back to Odoo after authorization.</li>
+            <li>While verification is enabled and Odoo is connected, each receipt attached to an expense (the file, its
+                file name, and technical references to the expense and the attachment) is sent to Authenta to check that
+                it is authentic. The result is stored on the expense in Odoo.</li>
+            <li>Only administrators can connect, test or disconnect Authenta; employees never see credentials.</li>
+        </ul>
+    </div>
+</section>
+
+<section class="oe_container">
+    <div class="oe_row oe_spaced">
+        <h2 class="oe_slogan">Support</h2>
+        <p class="oe_mt32">
+            Questions or issues: visit <a href="https://authenta.ai" target="_blank">authenta.ai</a>.
+        </p>
+    </div>
+</section>

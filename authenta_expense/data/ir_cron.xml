@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="ir_cron_authenta_submit" model="ir.cron">
+            <field name="name">Authenta: submit pending receipts</field>
+            <field name="model_id" ref="model_authenta_verification"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_submit_pending()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">minutes</field>
+            <field name="numbercall">-1</field>
+            <field name="active" eval="True"/>
+        </record>
+        <record id="ir_cron_authenta_poll" model="ir.cron">
+            <field name="name">Authenta: poll verification results</field>
+            <field name="model_id" ref="model_authenta_verification"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_poll()</field>
+            <field name="interval_number">2</field>
+            <field name="interval_type">minutes</field>
+            <field name="numbercall">-1</field>
+            <field name="active" eval="True"/>
+        </record>
+    </data>
+</odoo>

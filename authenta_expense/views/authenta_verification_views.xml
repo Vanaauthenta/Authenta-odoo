@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="authenta_verification_view_tree" model="ir.ui.view">
+        <field name="name">authenta.verification.tree</field>
+        <field name="model">authenta.verification</field>
+        <field name="arch" type="xml">
+            <tree string="Receipt Verifications" create="false" delete="false"
+                  decoration-danger="verdict == 'fake'" decoration-success="verdict == 'real' and state == 'completed'"
+                  decoration-warning="state in ('error', 'failed')" decoration-muted="superseded">
+                <field name="create_date" string="Created"/>
+                <field name="expense_id"/>
+                <field name="employee_id" optional="show"/>
+                <field name="attachment_name"/>
+                <field name="attempt" optional="hide"/>
+                <field name="state" widget="badge"/>
+                <field name="verdict" widget="badge"
+                       decoration-success="verdict == 'real'" decoration-danger="verdict == 'fake'"/>
+                <field name="last_error" optional="show"/>
+                <field name="superseded" optional="hide"/>
+                <field name="authenta_job_id" optional="hide" groups="hr_expense.group_hr_expense_manager"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="authenta_verification_view_form" model="ir.ui.view">
+        <field name="name">authenta.verification.form</field>
+        <field name="model">authenta.verification</field>
+        <field name="arch" type="xml">
+            <form string="Receipt Verification" create="false" delete="false" edit="false">
+                <header>
+                    <button name="action_retry" type="object" string="Retry" class="btn-secondary"
+                            invisible="state != 'error' or superseded" groups="hr_expense.group_hr_expense_manager"/>
+                    <button name="action_reverify" type="object" string="Re-verify" class="btn-secondary"
+                            invisible="superseded or state not in ('completed', 'failed', 'error')"
+                            groups="hr_expense.group_hr_expense_manager"
+                            confirm="Start a new Authenta verification of this receipt? This creates a new (billable) Authenta job."/>
+                    <field name="state" widget="statusbar" statusbar_visible="pending,submitted,processing,completed"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="expense_id"/>
+                            <field name="employee_id"/>
+                            <field name="attachment_id"/>
+                            <field name="attachment_name"/>
+                            <field name="mimetype"/>
+                        </group>
+                        <group>
+                            <field name="verdict"/>
+                            <field name="attempt"/>
+                            <field name="superseded"/>
+                            <field name="submitted_at"/>
+                            <field name="completed_at"/>
+                        </group>
+                    </group>
+                    <group string="Error" invisible="not last_error">
+                        <field name="last_error" nolabel="1" colspan="2"/>
+                    </group>
+                    <group string="Authenta details" groups="hr_expense.group_hr_expense_manager">
+                        <field name="authenta_job_id"/>
+                        <field name="external_reference"/>
+                        <field name="idempotency_key"/>
+                        <field name="attempts"/>
+                        <field name="next_attempt_at"/>
+                        <field name="result"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="authenta_verification_view_search" model="ir.ui.view">
+        <field name="name">authenta.verification.search</field>
+        <field name="model">authenta.verification</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="expense_id"/>
+                <field name="employee_id"/>
+                <field name="attachment_name"/>
+                <filter name="current" string="Current" domain="[('superseded', '=', False)]"/>
+                <filter name="fake" string="Fake" domain="[('verdict', '=', 'fake')]"/>
+                <filter name="problems" string="Errors" domain="[('state', 'in', ('error', 'failed'))]"/>
+                <filter name="in_progress" string="In Progress" domain="[('state', 'in', ('pending', 'submitted', 'processing'))]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                    <filter name="group_verdict" string="Verdict" context="{'group_by': 'verdict'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_authenta_verification" model="ir.actions.act_window">
+        <field name="name">Receipt Verifications</field>
+        <field name="res_model">authenta.verification</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_current': 1}</field>
+    </record>
+
+    <record id="action_authenta_verification_retry" model="ir.actions.server">
+        <field name="name">Retry failed verifications</field>
+        <field name="model_id" ref="model_authenta_verification"/>
+        <field name="binding_model_id" ref="model_authenta_verification"/>
+        <field name="groups_id" eval="[(4, ref('hr_expense.group_hr_expense_manager'))]"/>
+        <field name="state">code</field>
+        <field name="code">records.action_retry()</field>
+    </record>
+
+    <menuitem id="menu_authenta_verification" name="Receipt Verifications" parent="hr_expense.menu_hr_expense_report"
+              action="action_authenta_verification" sequence="50" groups="hr_expense.group_hr_expense_team_approver"/>
+</odoo>

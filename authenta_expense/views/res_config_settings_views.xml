@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_authenta" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.authenta.expense</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="hr_expense.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//app[@name='hr_expense']" position="inside">
+                <block title="Authenta Receipt Verification" name="authenta_expense_setting_container" groups="base.group_system">
+                    <setting id="authenta_connection_setting" string="Authenta connection"
+                             help="Connect this Odoo database to your Authenta organization. You log in to Authenta and approve the connection; no API key needs to be copied.">
+                        <field name="authenta_api_key_set" invisible="1"/>
+                        <div class="content-group">
+                            <div class="row mt8">
+                                <label for="authenta_connection_status" class="col-lg-4 o_light_label"/>
+                                <field name="authenta_connection_status"/>
+                            </div>
+                            <div class="row mt8" invisible="not authenta_api_key_set">
+                                <label for="authenta_connected_tenant" class="col-lg-4 o_light_label"/>
+                                <field name="authenta_connected_tenant"/>
+                            </div>
+                            <div class="mt16">
+                                <button name="action_authenta_connect" type="object" string="Connect"
+                                        class="btn-primary" icon="fa-link" invisible="authenta_api_key_set"/>
+                                <button name="action_authenta_test_connection" type="object" string="Test Connection"
+                                        class="btn-secondary" icon="fa-plug" invisible="not authenta_api_key_set"/>
+                                <button name="action_authenta_disconnect" type="object" string="Disconnect"
+                                        class="btn-secondary ms-2" icon="fa-unlink" invisible="not authenta_api_key_set"
+                                        confirm="Disconnect Odoo from Authenta? Receipts will no longer be verified until you connect again."/>
+                            </div>
+                            <div class="mt16" invisible="authenta_api_key_set">
+                                <div class="text-muted small">
+                                    Or enter an integration API key manually (created in Authenta under Integrations &gt; Odoo), for
+                                    example if Connect cannot be used.
+                                </div>
+                                <div class="row mt8">
+                                    <label for="authenta_api_key" class="col-lg-4 o_light_label"/>
+                                    <field name="authenta_api_key" password="True" placeholder="api_…"/>
+                                </div>
+                                <button name="action_authenta_test_connection" type="object" string="Save &amp; Test"
+                                        class="btn-secondary mt8" icon="fa-key"/>
+                            </div>
+                        </div>
+                    </setting>
+                    <setting id="authenta_enabled_setting" string="Verify receipts with Authenta"
+                             help="Check every expense receipt for forgery and block approval of expenses with fake or unverified receipts.">
+                        <field name="authenta_enabled"/>
+                        <div class="text-muted small mt8">
+                            Authenta is an external service and requires an active Authenta account. While this option is on and
+                            Odoo is connected, each receipt attached to an expense (JPEG, PNG or PDF file, its file name, and
+                            technical references to the expense and the attachment) is sent to Authenta to check that it is
+                            authentic. The result (real, fake or not verified) is stored on the expense in Odoo.
+                        </div>
+                        <div class="text-warning small mt8" invisible="not authenta_enabled or authenta_api_key_set">
+                            Odoo is not connected to Authenta yet: no receipt is sent or verified until you click Connect or enter an API key.
+                        </div>
+                    </setting>
+                    <setting id="authenta_advanced_setting" string="Advanced connection settings" groups="base.group_no_one"
+                             help="Technical settings. Leave the URLs empty to use the Authenta service; change them only if Authenta support asks you to.">
+                        <div class="content-group">
+                            <div class="row mt8">
+                                <label for="authenta_base_url" class="col-lg-4 o_light_label"/>
+                                <field name="authenta_base_url" placeholder="Default Authenta service"/>
+                            </div>
+                            <div class="row mt8">
+                                <label for="authenta_api_url" class="col-lg-4 o_light_label"/>
+                                <field name="authenta_api_url" placeholder="Same as the Authenta URL"/>
+                            </div>
+                            <div class="row mt8">
+                                <label for="authenta_max_file_size_mb" class="col-lg-4 o_light_label"/>
+                                <field name="authenta_max_file_size_mb"/>
+                            </div>
+                        </div>
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_authenta_verification_employee,authenta.verification.employee,model_authenta_verification,base.group_user,1,0,0,0
+access_authenta_verification_manager,authenta.verification.manager,model_authenta_verification,hr_expense.group_hr_expense_manager,1,0,0,0

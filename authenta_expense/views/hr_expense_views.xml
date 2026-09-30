@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="hr_expense_view_form_authenta" model="ir.ui.view">
+        <field name="name">hr.expense.view.form.inherit.authenta</field>
+        <field name="model">hr.expense</field>
+        <field name="inherit_id" ref="hr_expense.hr_expense_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/div[hasclass('oe_title')]" position="before">
+                <div class="alert alert-danger" role="alert" invisible="authenta_status != 'fake'">
+                    <strong>Fake receipt detected.</strong>
+                    <field name="authenta_status_message" class="oe_inline" readonly="1"/>
+                </div>
+                <div class="alert alert-warning" role="alert" invisible="authenta_status != 'error'">
+                    <strong>Receipt not verified.</strong> This expense cannot be approved until the receipt is verified.
+                </div>
+            </xpath>
+            <xpath expr="//field[@name='description']" position="before">
+                <group string="Receipt Verification" invisible="authenta_status == 'none'">
+                    <field name="authenta_status" widget="badge"
+                           decoration-success="authenta_status == 'real'" decoration-danger="authenta_status == 'fake'"
+                           decoration-warning="authenta_status == 'error'" decoration-info="authenta_status == 'processing'"/>
+                    <field name="authenta_verification_ids" nolabel="1" colspan="2" readonly="1">
+                        <tree create="false" delete="false" decoration-muted="superseded">
+                            <field name="attachment_name"/>
+                            <field name="state" widget="badge"/>
+                            <field name="verdict" widget="badge"
+                                   decoration-success="verdict == 'real'" decoration-danger="verdict == 'fake'"/>
+                            <field name="last_error"/>
+                            <field name="superseded" column_invisible="True"/>
+                        </tree>
+                    </field>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="hr_expense_view_tree_authenta" model="ir.ui.view">
+        <field name="name">hr.expense.tree.inherit.authenta</field>
+        <field name="model">hr.expense</field>
+        <field name="inherit_id" ref="hr_expense.hr_expense_view_expenses_analysis_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='state']" position="before">
+                <field name="authenta_status" widget="badge" optional="show"
+                       decoration-success="authenta_status == 'real'" decoration-danger="authenta_status == 'fake'"
+                       decoration-warning="authenta_status == 'error'" decoration-info="authenta_status == 'processing'"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_hr_expense_sheet_form_authenta" model="ir.ui.view">
+        <field name="name">hr.expense.sheet.form.inherit.authenta</field>
+        <field name="model">hr.expense.sheet</field>
+        <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/div[hasclass('oe_title')]" position="before">
+                <field name="authenta_status" invisible="1"/>
+                <div class="alert alert-danger" role="alert" invisible="authenta_status != 'fake'">
+                    <strong>Fake receipt detected.</strong>
+                    This report contains a receipt flagged as FAKE by Authenta and cannot be approved.
+                </div>
+                <div class="alert alert-warning" role="alert" invisible="authenta_status not in ('error', 'processing')">
+                    <strong>Receipts not verified yet.</strong>
+                    Approval is blocked until every receipt is verified as authentic.
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_hr_expense_sheet_tree_authenta" model="ir.ui.view">
+        <field name="name">hr.expense.sheet.tree.inherit.authenta</field>
+        <field name="model">hr.expense.sheet</field>
+        <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='state']" position="before">
+                <field name="authenta_status" widget="badge" optional="show"
+                       decoration-success="authenta_status == 'real'" decoration-danger="authenta_status == 'fake'"
+                       decoration-warning="authenta_status == 'error'" decoration-info="authenta_status == 'processing'"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
